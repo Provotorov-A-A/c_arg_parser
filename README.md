@@ -12,7 +12,11 @@
 
 2. Create command description array (CDA). Each element of CDA is a string. 
 First string is command name begining with symbol `'-'`, i.e `"-device"`. 
-Second string is valid arguments list for command in the first string separated by specified delimiter string, i.e. `"avr, cortex-m3, risc-v"`.
+Second string is valid arguments list for command in the first string separated by specified delimiter string.
+There are three types of arguments can be parsed:
+- required argument with strictly specified value, i.e. `"avr, cortex-m3, risc-v"`
+- required argument that may have any unknown value, that will not be checked by parser. In this case type a string with no meaning symbols (i.e. all spaces`"  "`);
+- no argument required. In this case type NULL insteed of any string.
 
 3. Define two variables: 
 - pointer for parse result array that parser will return;

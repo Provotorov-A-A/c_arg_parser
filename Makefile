@@ -11,7 +11,7 @@ clean:
 	@rm -f $(EXE)
 	
 run_invalid:
-	$(EXE) -erase all -write register -read page
+	$(EXE) -erase full -get_id XXX -write register -read page 
 
 run_valid:
-	$(EXE) -erase full -write register -read page
+	$(EXE) -erase full -get_id -write_id 0xDEADBEAF -write register -read page

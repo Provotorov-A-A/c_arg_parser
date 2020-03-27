@@ -24,8 +24,10 @@
 static const cmd_description cmd_descr[] = 
 {
 	{"-read", "all, page"},
+	{"-get_id", NULL},
 	{"-write", "memory, register"},
-	{"-erase", "full, sector"}
+	{"-write_id", "   "},
+	{"-erase", "full, sector"},
 };
 
 //========================================================================================
