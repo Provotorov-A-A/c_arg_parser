@@ -7,7 +7,12 @@
 //==================================================================================
 //									TYPES DECLARATION
 //==================================================================================
-
+typedef enum
+{
+	ARGUMENT_NOT_REQUIRED,
+	ARGUMENT_REQUIRED_UNKNOWN,
+	ARGUMENT_REQUIRED_SPECIFIED
+} arg_parser_argument_requirement;
 
 //==================================================================================
 //									VARIABLES DECLARATION
@@ -25,7 +30,7 @@ static cmd_arg_pair* parsed_pairs_array;
 //									FUNCTIONS DEFINITION
 //==================================================================================
 // Returns 0 if string is zero-length or it is all spaces symbols. In other case returns 1
-static int is_valid_token(const char *str)
+static int token_is_not_empty(const char *str)
 {
 	if(0 == strlen(str))
 	{
@@ -152,20 +157,24 @@ int arg_parser_parse(int argc_, char *argv_[], void** pResult, size_t* parsed_pa
 			next_token = arg_parser_argv[i+1];
 			if ('-' != next_token[0])
 			{
-				if (is_valid_token(next_token))	
+				if (token_is_not_empty(next_token))	
 				{
 					has_valid_token_next = 1;
 				}
 			}
 		}
-		// Check is argument required for this command
-		int arg_required = 0;
-		if ( is_valid_token(arg_parser_cmd_descr[index].valid_args_list) ) 
+		// Check what argument is required for this command
+		arg_parser_argument_requirement arg_required = ARGUMENT_REQUIRED_SPECIFIED;
+		if (NULL == arg_parser_cmd_descr[index].valid_args_list)
 		{
-			arg_required = 1;
+			arg_required = ARGUMENT_NOT_REQUIRED;
+		}
+		else if ( !token_is_not_empty(arg_parser_cmd_descr[index].valid_args_list) ) 
+		{
+			arg_required = ARGUMENT_REQUIRED_UNKNOWN;
 		}
 		
-		if ( arg_required )
+		if ( ARGUMENT_REQUIRED_SPECIFIED == arg_required )
 		{
 			// Have invalid token insteed of argument
 			if ( !has_valid_token_next )
@@ -182,19 +191,36 @@ int arg_parser_parse(int argc_, char *argv_[], void** pResult, size_t* parsed_pa
 			cur_parsed_pair_index+=1;
 			continue;
 		}
-		else
+		else if ( ARGUMENT_REQUIRED_UNKNOWN == arg_required )
 		{
-			// Have token when it's not required
-			if ( has_valid_token_next )
+			// Have invalid token insteed of argument
+			if ( !has_valid_token_next )
 			{
 				return i+1;	
 			}
 			else
 			{
-				i+=1;
+				parsed_pairs_array[cur_parsed_pair_index].arg = next_token;
+				i+=2;
 				cur_parsed_pair_index+=1;
-				continue;	
+				continue;
 			}
+		}
+		else if ( ARGUMENT_NOT_REQUIRED == arg_required )
+		{
+			if ( has_valid_token_next )
+			{
+				return i+1;	
+			}
+			parsed_pairs_array[cur_parsed_pair_index].arg = NULL;
+			i+=1;
+			cur_parsed_pair_index+=1;
+			continue;
+		}
+		else
+		{
+			// Must not be here
+			return i;
 		}
 	}
 	
