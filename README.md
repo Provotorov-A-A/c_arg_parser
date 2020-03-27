@@ -55,8 +55,10 @@ Run demonstrating program with command `make run_valid` or `make run_invalid`.
 static const cmd_description cmd_descr[] = 
 {
 	{"-read", "all, page"},
+	{"-get_id", NULL},
 	{"-write", "memory, register"},
-	{"-erase", "full, sector"}
+	{"-write_id", "   "},
+	{"-erase", "full, sector"},
 };
 
 int main(int argc, char *argv[]) 
