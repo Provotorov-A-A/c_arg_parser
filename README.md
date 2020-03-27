@@ -67,10 +67,10 @@ int main(int argc, char *argv[])
 	size_t parsed_count;
 	
 	arg_parser_init(cli_struct, sizeof(cli_struct)/sizeof(cmd_description), VALID_ARGUMENTS_DELIMITER);	
-	int r = arg_parser_parse(argc_dbg, argv_dbg, (void**)&parsed, &parsed_count);
+	int r = arg_parser_parse(argc, argv, (void**)&parsed, &parsed_count);
 	if (r)
 	{
-		printf("### Argument parser error: argument[%d], \"%s\" \n", r, argv_dbg[r]);
+		printf("### Argument parser error: argument[%d], \"%s\" \n", r, argv[r]);
 		return -1;
 	}
 	else
